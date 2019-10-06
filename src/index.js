@@ -5,49 +5,57 @@ import "./main.css";
 
 M.AutoInit();
 
-(function() {
-  const createJSON = () => {
-    const json = {};
-    document.querySelector(".pairs").childNodes.forEach(v => {
-      json[v.childNodes[0].value] = v.childNodes[1].value;
-    });
-    return JSON.stringify(json);
-  };
+const renderInputs = () => {
+  const Inputs = (
+    <div class="kvp">
+      <div class="input-field col s6">
+        <input id="key" type="text" />
+        <label for="key">Key</label>
+      </div>
+      <div class="input-field col s6">
+        <input id="value" type="text" />
+        <label for="value">Value</label>
+      </div>
+    </div>
+  );
 
-  document.getElementById("download").onclick = () => {
-    console.log(createJSON());
-  };
+  render(Inputs, document.getElementById("pairs"));
+};
 
-  document.querySelector(".add").onclick = () => {
-    const Inputs = (
-      <>
-        <div class="input-field col s6">
-          <input id="key" type="text" class="validate" />
-          <label for="key">Key</label>
-        </div>
-        <div class="input-field col s6">
-          <input id="Value" type="text" class="validate" />
-          <label for="Value">Value</label>
-        </div>
-      </>
-    );
-
-    render(Inputs, document.querySelector(".pairs"));
-  };
-
-  document.getElementById("clipboard").onclick = () => {
-    const copyTextArea = document.createElement("textarea");
-
-    copyTextArea.value = createJSON();
-    copyTextArea.focus();
-    copyTextArea.select();
-
-    try {
-      const successful = document.execCommand("copy");
-      const msg = successful ? "successful" : "unsuccessful";
-      console.log("Copying text command was " + msg);
-    } catch (err) {
-      console.log("Unable to copy");
+const copyToClipboard = () => {
+  const json = createJSON();
+  navigator.clipboard.writeText(json).then(
+    function() {
+      console.log("success");
+    },
+    function() {
+      console.log("fail");
     }
-  };
+  );
+};
+
+const downloadJSON = () => {
+  const downloadBtn = document.getElementById("download");
+
+  downloadBtn.setAttribute(
+    "href",
+    `data:text/json;charset=utf-8,${encodeURIComponent(createJSON())}`
+  );
+};
+
+const createJSON = () => {
+  const json = {};
+  document.querySelectorAll(".kvp").forEach(v => {
+    json[v.childNodes[0].childNodes[0].value] =
+      v.childNodes[1].childNodes[0].value;
+  });
+  return JSON.stringify(json);
+};
+
+(function() {
+  document.querySelector(".add").addEventListener("click", renderInputs);
+  document
+    .getElementById("clipboard")
+    .addEventListener("click", copyToClipboard);
+  document.getElementById("download").addEventListener("click", downloadJSON);
 })();
