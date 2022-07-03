@@ -1,61 +1,96 @@
-import { h, render, Component, Fragment } from "preact";
-import "materialize-css/dist/js/materialize.min.js";
-import "materialize-css/dist/css/materialize.min.css";
+import React, { useState, useRef } from "react";
+import ReactDOM from "react-dom";
 import "./main.css";
 
-M.AutoInit();
+const App = () => {
+  const [pairs, setPairs] = useState({ "": "" });
+  const downloadRef = useRef(null);
 
-const renderInputs = () => {
-  const Inputs = (
-    <div class="kvp">
-      <div class="input-field col s6">
-        <input id="key" type="text" />
-        <label for="key">Key</label>
+  const createJSON = () => JSON.stringify(pairs);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(createJSON()).then(
+      () => console.log("success"),
+      () => console.log("fail")
+    );
+  };
+
+  const downloadJSON = () => {
+    downloadRef.current.setAttribute(
+      "href",
+      `data:text/json;charset=utf-8,${encodeURIComponent(createJSON())}`
+    );
+  };
+
+  const updateKey = (e, oldVal, ind) => {
+    e.preventDefault();
+    console.log(ind);
+    setPairs({ ...pairs, pairs[oldVal]: "" }); // e.currentTarget.value
+  };
+
+  const updateValue = (e) => {
+    e.preventDefault();
+    setPairs(e.currentTarget.value);
+  };
+
+  const addPair = () => {
+    const uuid = Math.random().toString(36).substring(2, 15);
+    setPairs({ ...pairs, [uuid]: "" });
+  };
+
+  const kvp = Object.entries(pairs).map((value, index) => {
+    return (
+      <div key={`kpv-${index}`}>
+        <div className="input-field">
+          <label htmlFor="key" aria-label="key">
+            <input
+              id="key"
+              type="text"
+              defaultValue={value[0]}
+              onBlur={(e) => updateKey(e, value, index)}
+            />
+          </label>
+        </div>
+        <div className="input-field">
+          <label htmlFor="value" aria-label="value">
+            <input
+              id="value"
+              type="text"
+              defaultValue={value[1]}
+              onBlur={(e) => updateValue(e, index)}
+            />
+          </label>
+        </div>
       </div>
-      <div class="input-field col s6">
-        <input id="value" type="text" />
-        <label for="value">Value</label>
-      </div>
-    </div>
-  );
-
-  render(Inputs, document.getElementById("pairs"));
-};
-
-const copyToClipboard = () => {
-  const json = createJSON();
-  navigator.clipboard.writeText(json).then(
-    function() {
-      console.log("success");
-    },
-    function() {
-      console.log("fail");
-    }
-  );
-};
-
-const downloadJSON = () => {
-  const downloadBtn = document.getElementById("download");
-
-  downloadBtn.setAttribute(
-    "href",
-    `data:text/json;charset=utf-8,${encodeURIComponent(createJSON())}`
-  );
-};
-
-const createJSON = () => {
-  const json = {};
-  document.querySelectorAll(".kvp").forEach(v => {
-    json[v.childNodes[0].childNodes[0].value] =
-      v.childNodes[1].childNodes[0].value;
+    );
   });
-  return JSON.stringify(json);
+
+  return (
+    <>
+      <form id="pairs">
+        <div className="kvp">{kvp}</div>
+      </form>
+      <div>
+        <div className="input-field">
+          <button className="btn" onClick={addPair}>
+            +
+          </button>
+          <button className="btn" onClick={copyToClipboard}>
+            Copy to Clipboard
+          </button>
+          <a
+            className="btn"
+            ref={downloadRef}
+            download="result.json"
+            role="button"
+            onClick={downloadJSON}
+          >
+            Download JSON
+          </a>
+        </div>
+      </div>
+    </>
+  );
 };
 
-(function() {
-  document.querySelector(".add").addEventListener("click", renderInputs);
-  document
-    .getElementById("clipboard")
-    .addEventListener("click", copyToClipboard);
-  document.getElementById("download").addEventListener("click", downloadJSON);
-})();
+ReactDOM.render(<App />, document.getElementById("app"));

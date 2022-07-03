@@ -1,12 +1,53 @@
+* {
+  box-sizing: border-box;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+}
+
 :root {
   font-size: 16px;
 }
 
 html,
 body {
-  margin: 3rem 0;
+  margin: 3rem;
+}
+
+.input-field {
+  display: inline-block;
+  width: 50%;
+  margin: 20px 0;
+  padding: 0 40px;
 }
 
 input[type="text"] {
-  padding: 0 10px;
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.5rem;
+  border: 2px solid #aab5d1;
+  border-radius: 5px;
+}
+
+input[type="text"]::-moz-selection {
+  color: #081ff9;
+}
+input[type="text"]::selection {
+  color: #081ff9;
+}
+
+.btn {
+  font-size: 1.5rem;
+  margin: 0 1rem;
+  border: 2px solid #081ff9;
+  border-radius: 5px;
+  background-color: transparent;
+  padding: 1rem 2rem;
+}
+
+.btn:hover,
+.btn:active {
+  cursor: pointer;
+  background-color: #eaecf5;
+  color: #081ff9;
 }
