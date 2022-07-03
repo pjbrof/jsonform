@@ -51,3 +51,12 @@ input[type="text"]::selection {
   background-color: #eaecf5;
   color: #081ff9;
 }
+
+.kvp {
+  margin-bottom: 1rem;
+}
+
+.control-panel {
+  display: flex;
+  justify-content: space-around;
+}

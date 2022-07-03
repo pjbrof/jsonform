@@ -5,36 +5,35 @@ module.exports = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js"
+    filename: "bundle.js",
   },
   mode: "development",
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
+    static: path.join(__dirname, "dist"),
     compress: true,
     port: 9000,
-    hot: true
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"]
-          }
-        }
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+          },
+        },
       },
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"]
-      }
-    ]
+        use: ["style-loader", "css-loader"],
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html"
-    })
-  ]
+      template: "./src/index.html",
+    }),
+  ],
 };
