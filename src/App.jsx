@@ -24,13 +24,13 @@ const App = () => {
 
   const updateKey = (e, oldVal, ind) => {
     e.preventDefault();
-    console.log("ov", oldVal);
-    setPairs([...pairs]); // , pairs: e.currentTarget.value ]);
+    setPairs([...pairs]);
   };
 
-  const updateValue = (e) => {
+  const updateValue = (e, value) => {
     e.preventDefault();
-    setPairs(e.currentTarget.value);
+    //setPairs(e.currentTarget.value);
+    console.log(value);
   };
 
   const addPair = () => {
@@ -57,7 +57,7 @@ const App = () => {
               id="value"
               type="text"
               value={value[1]}
-              onChange={(e) => updateValue(e, index)}
+              onChange={(e) => updateValue(e, value[1], index)}
             />
           </label>
         </div>
